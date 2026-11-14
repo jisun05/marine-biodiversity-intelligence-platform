@@ -187,29 +187,91 @@ marine-biodiversity-platform/
 │   │   │   └── taxonomy_routes.py
 │   │   │
 │   │   ├── db/
+│   │   │   ├── base.py
+│   │   │   └── session.py
+│   │   │
 │   │   ├── models/
+│   │   │   ├── data_collection.py
+│   │   │   ├── gbif_raw_observation.py
+│   │   │   ├── obis_raw_observation.py
+│   │   │   ├── observation.py
+│   │   │   ├── observation_taxonomy.py
+│   │   │   └── taxon.py
+│   │   │
 │   │   ├── schemas/
-│   │   └── services/
-│   │       ├── gbif_ingestion.py
-│   │       ├── gbif_transformer.py
-│   │       ├── obis_ingestion.py
-│   │       ├── obis_transformer.py
-│   │       ├── worms_service.py
-│   │       └── taxonomy_persistence_service.py
+│   │   │   ├── data_collection_schemas.py
+│   │   │   ├── observation_schemas.py
+│   │   │   └── taxonomy_schemas.py
+│   │   │
+│   │   ├── services/
+│   │   │   ├── batch_processor.py
+│   │   │   ├── data_collection_service.py
+│   │   │   ├── gbif_ingestion.py
+│   │   │   ├── gbif_service.py
+│   │   │   ├── gbif_transformer.py
+│   │   │   ├── obis_ingestion.py
+│   │   │   ├── obis_service.py
+│   │   │   ├── obis_transformer.py
+│   │   │   ├── taxonomy_persistence_service.py
+│   │   │   └── worms_service.py
+│   │   │
+│   │   └── main.py
 │   │
 │   ├── tests/
+│   │   ├── conftest.py
+│   │   ├── test_batch_processor.py
+│   │   ├── test_data_collection_service.py
+│   │   ├── test_gbif_ingestion.py
+│   │   ├── test_gbif_service.py
+│   │   ├── test_gbif_transformer.py
+│   │   ├── test_obis_ingestion.py
+│   │   ├── test_obis_service.py
+│   │   ├── test_obis_transformer.py
+│   │   ├── test_observation_api.py
+│   │   ├── test_taxonomy_persistence_service.py
+│   │   └── test_worms_service.py
+│   │
 │   └── requirements.txt
 │
 ├── frontend/
+│   ├── public/
+│   │   ├── favicon.svg
+│   │   └── icons.svg
+│   │
 │   ├── src/
 │   │   ├── api/
+│   │   │   └── observationApi.ts
+│   │   │
 │   │   ├── components/
+│   │   │   └── Map/
+│   │   │       ├── ObservationMap.css
+│   │   │       └── ObservationMap.tsx
+│   │   │
 │   │   ├── types/
+│   │   │   ├── observation.ts
+│   │   │   └── taxonomy.ts
+│   │   │
+│   │   ├── App.css
 │   │   ├── App.tsx
+│   │   ├── index.css
 │   │   └── main.tsx
-│   └── package.json
+│   │
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.node.json
+│   ├── eslint.config.js
+│   └── .gitignore
 │
 ├── scripts/
+│   ├── check_worms_names.py
+│   ├── dry_run_taxonomy_mapping.py
+│   ├── investigate_unmatched_taxa.py
+│   └── persist_taxonomy_mapping.py
+│
 ├── docs/
 │   └── images/
 │       └── system-architecture.png
