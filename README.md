@@ -1,22 +1,20 @@
 # Marine Biodiversity Intelligence Platform
 
-An open-source platform for integrating, standardizing, exploring,
-and visualizing marine biodiversity observations.
+An open-source platform for integrating, standardizing, exploring, and visualizing marine biodiversity observations.
 
 ![System Architecture](docs/images/system-architecture.png)
-
 
 ## 1. Overview
 
 Marine biodiversity observations are distributed across multiple international databases, each with different data structures, identifiers, and taxonomic representations.
 
-The Marine Biodiversity Intelligence Platform addresses this fragmentation by providing a unified data integration pipeline.
+The Marine Biodiversity Intelligence Platform addresses this fragmentation by providing a unified data integration and visualization pipeline.
 
 The current implementation focuses on:
 
 - Collecting marine biodiversity observations from GBIF and OBIS.
 - Transforming source-specific records into a common observation model.
-- Preventing duplicate records through source-based identifiers.
+- Preventing duplicate records using source-based identifiers.
 - Storing observation and geospatial data in PostgreSQL with PostGIS.
 - Connecting observations with taxonomic information through WoRMS.
 - Exposing biodiversity data through REST APIs.
@@ -24,17 +22,21 @@ The current implementation focuses on:
 
 ## 2. Dataset Overview
 
-The current MVP database contains:
+The current MVP database contains the following records:
 
 | Metric | Value |
 |---|---:|
-| Total canonical observations | 30,037 |
+| Canonical observations | 30,037 |
 | GBIF raw records | 15,020 |
 | OBIS raw records | 15,020 |
 | Persisted taxonomic entities | 15 |
 | Observation-level taxonomy mappings | 208 |
 
-**Taxonomy data note:** The 15 taxonomic entities and 208 observation-level mappings represent a separately processed taxonomy subset, not the complete dataset of 30,037 observations.
+**Data interpretation note:**
+
+Raw records and canonical observations represent different stages of the data pipeline. Their counts are therefore reported separately.
+
+The 15 persisted taxonomic entities and 208 observation-level taxonomy mappings represent a separately processed subset of the observation dataset, not the complete collection of 30,037 canonical observations.
 
 ## 3. Key Features
 
@@ -42,10 +44,10 @@ The current MVP database contains:
 
 Integration of two major international biodiversity data providers:
 
-- GBIF — Global Biodiversity Information Facility
-- OBIS — Ocean Biodiversity Information System
+- **GBIF** — Global Biodiversity Information Facility
+- **OBIS** — Ocean Biodiversity Information System
 
-Source-specific ingestion services collect marine biodiversity observations and preserve their original records.
+Source-specific ingestion services collect marine biodiversity observations while preserving their original records.
 
 ### 3.2 Data Standardization
 
@@ -61,9 +63,9 @@ The pipeline includes:
 
 ### 3.3 Taxonomic Integration
 
-Integration with WoRMS (World Register of Marine Species) for taxonomic resolution.
+Integration with **WoRMS (World Register of Marine Species)** for taxonomic resolution.
 
-Implemented functionality includes:
+Implemented backend capabilities include:
 
 - Taxonomic name resolution.
 - AphiaID-based taxon identification.
@@ -71,6 +73,12 @@ Implemented functionality includes:
 - Observation-level taxonomy relationships.
 - Reuse of existing taxonomic records.
 - Duplicate mapping prevention.
+
+**Current implementation status:**
+
+Taxonomic integration and persistence are implemented and tested at the backend level. The current frontend also provides a taxonomic filter, but it covers only the subset of observations with persisted taxonomy mappings.
+
+Improving taxonomy coverage and refining the user interface to communicate the distinction between total observations and taxonomy-mapped observations are planned for future development.
 
 ### 3.4 Geospatial Visualization
 
@@ -80,9 +88,10 @@ The frontend provides:
 
 - Observation statistics.
 - Geographic observation visualization.
-- Taxonomic filtering.
 - Data-source filtering.
-- Observation search and pagination.
+- Scientific-name search.
+- Observation pagination.
+- Taxonomic filtering for records with available taxonomy mappings.
 
 ### 3.5 REST API
 
@@ -97,44 +106,50 @@ Interactive API documentation is available through Swagger UI and ReDoc.
 
 ## 4. Architecture
 
-The platform follows a modular data pipeline architecture.
+The platform follows a modular data integration architecture.
+
+The pipeline collects records from GBIF and OBIS, stores source-specific raw records, transforms them into a unified observation model, and makes the resulting data available through REST APIs and an interactive frontend.
+
+Taxonomic information is resolved and persisted through a separate WoRMS integration layer.
 
 ```text
         Biodiversity Data Providers
-                  |
-          +-------+-------+
-          |               |
-         GBIF            OBIS
-          |               |
-          v               v
-    GBIF Ingestion   OBIS Ingestion
-          |               |
-          v               v
-      Raw GBIF         Raw OBIS
-       Records          Records
-          |               |
-          +-------+-------+
-                  |
-                  v
-        Data Transformation
-                  |
-                  v
+                    |
+            +-------+-------+
+            |               |
+           GBIF            OBIS
+            |               |
+            v               v
+      GBIF Ingestion   OBIS Ingestion
+            |               |
+            v               v
+       Raw GBIF         Raw OBIS
+        Records          Records
+            |               |
+            +-------+-------+
+                    |
+                    v
+          Data Transformation
+                    |
+                    v
        Unified Observation Model
-                  |
-                  v
-        PostgreSQL + PostGIS
-                  |
-          +-------+-------+
-          |               |
-          v               v
-       FastAPI       Taxonomic Data
-          |           Integration
-          |             WoRMS
-          v
-      React Frontend
-          |
-          v
-    Leaflet Map Interface
+                    |
+                    v
+          PostgreSQL + PostGIS
+                    |
+            +-------+-------+
+            |               |
+            v               v
+          FastAPI      WoRMS Integration
+            |               |
+            |         Taxonomic Data
+            |          Persistence
+            |
+            v
+       React Frontend
+            |
+            v
+      Leaflet Map Interface
 ```
 
 ## 5. Technology Stack
@@ -195,6 +210,10 @@ marine-biodiversity-platform/
 │   └── package.json
 │
 ├── scripts/
+├── docs/
+│   └── images/
+│       └── system-architecture.png
+│
 ├── compose.yaml
 ├── .env.example
 ├── DEVELOPMENT_LOG.md
@@ -204,21 +223,30 @@ marine-biodiversity-platform/
 ## 7. Data Sources
 
 ### GBIF
-Global Biodiversity Information Facility
 
-https://www.gbif.org/
+**Global Biodiversity Information Facility**
+
+Provides access to global biodiversity occurrence data.
+
+Website: https://www.gbif.org/
 
 ### OBIS
-Ocean Biodiversity Information System
 
-https://obis.org/
+**Ocean Biodiversity Information System**
+
+Provides access to marine biodiversity occurrence data.
+
+Website: https://obis.org/
 
 ### WoRMS
-World Register of Marine Species
 
-https://www.marinespecies.org/
+**World Register of Marine Species**
 
-These services provide the biodiversity occurrence and taxonomic information used by the platform.
+Provides taxonomic information and marine species name resolution services.
+
+Website: https://www.marinespecies.org/
+
+These services provide the occurrence and taxonomic information integrated by the platform.
 
 ## 8. Testing
 
@@ -231,12 +259,15 @@ The project includes automated backend tests covering:
 - Batch processing.
 - WoRMS integration.
 - Taxonomy persistence.
+- Duplicate prevention.
 
 Run the test suite from the project root:
 
 ```bash
 PYTHONPATH=. pytest backend/tests/ -v
 ```
+
+The current backend test suite has **65 passing tests**.
 
 ## 9. Local Development
 
@@ -279,11 +310,17 @@ docker compose ps
 
 ### 9.4 Install Backend Dependencies
 
+Create and activate a virtual environment:
+
 ```bash
 python -m venv .venv
 
 source .venv/bin/activate
+```
 
+Install dependencies:
+
+```bash
 pip install -r backend/requirements.txt
 ```
 
@@ -322,23 +359,15 @@ Build the frontend:
 npm run build
 ```
 
-## 10. Development Documentation
-
-For implementation details, technical decisions, development progress, and verification results, see:
-
-[DEVELOPMENT_LOG.md](DEVELOPMENT_LOG.md)
-
-## 11. Future Improvements
+## 10. Future Improvements
 
 Potential future development directions include:
 
 - Expanded taxonomic coverage across the complete observation dataset.
-- Improved spatial filtering and geographic analysis.
+- Improved taxonomy filtering and user interface clarity.
+- Enhanced spatial filtering and geographic analysis.
 - Additional biodiversity data provider integrations.
 - Advanced biodiversity statistics and research-oriented visualizations.
-- Enhanced data quality assessment and provenance tracking.
+- Improved data quality assessment and provenance tracking.
 - Automated and scheduled data synchronization.
 
-## 12. License
-
-License to be determined.
