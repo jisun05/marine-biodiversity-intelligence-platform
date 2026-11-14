@@ -1,0 +1,19 @@
+.observation-map {
+  width: 100%;
+  height: 420px;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.map-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  font-size: 12px;
+}
+
+.map-popup strong {
+  color: #173b4a;
+  font-size: 13px;
+}
